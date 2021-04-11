@@ -208,14 +208,16 @@ class BackEndScriptEditor extends Base<Props, State> {
             						if (extractedInfo[key] != DEFAULTS[key] && this.state.extensionValues[defaultDict[key]] != extractedInfo[key]) {
             								willUpdateExtensions.push({
             										name: defaultDict[key],
-            										value: extractedInfo[key]
+            										value: extractedInfo[key],
+		            								prettify: 'javascript'
             								});
             						}
             				} else if (this.functionNameMapping[key]) {
             						if (this.state.attributeValues[this.functionNameMapping[key]] != extractedInfo[key]) {
             								willUpdateAttributes.push({
             										name: this.functionNameMapping[key],
-            										value: extractedInfo[key]
+            										value: extractedInfo[key],
+		            								prettify: 'javascript'
             								});
             						}
             				}

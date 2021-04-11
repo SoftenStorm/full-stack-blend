@@ -29,6 +29,11 @@ let invalidateTimer = null;
 let pasteboard: string = null;
 let isCutMode: boolean = false;
 
+declare let js_beautify;
+declare let css_beautify;
+declare let html_beautify;
+declare let ts: any;
+
 function removeAllPresetReferences(presetId: string, link: string) {
 	// TODO: should iterate in all documents.
 	// 
@@ -337,6 +342,20 @@ var ManipulationHelper = {
       
       if (content.attributes !== undefined) {
         for (let attribute of content.attributes) {
+        	if (attribute.value) {
+	        	switch (attribute.prettify) {
+	        		case 'javascript':
+	        			attribute.value = CodeHelper.formatTSCode(attribute.value, attribute.name == 'internal-fsb-data-code-body');
+	        			break;
+	        		case 'stylesheet':
+	        			attribute.value = css_beautify(attribute.value);
+	        			break;
+	        		case 'html':
+	        			attribute.value = html_beautify(attribute.value);
+	        			break;
+	        	}
+	        }
+        	
           switch (attribute.name) {
             case 'internal-fsb-reusable-preset-name':
               let nextReusablePresetName = attribute.value || null;
@@ -557,6 +576,20 @@ var ManipulationHelper = {
       {
         if (content.extensions !== undefined) {
           for (let extension of content.extensions) {
+	        	if (extension.value) {
+		        	switch (extension.prettify) {
+		        		case 'javascript':
+		        			extension.value = CodeHelper.formatTSCode(extension.value, extension.name == 'internal-fsb-data-code-body');
+		        			break;
+		        		case 'stylesheet':
+		        			extension.value = css_beautify(extension.value);
+		        			break;
+		        		case 'html':
+		        			extension.value = html_beautify(extension.value);
+		        			break;
+		        	}
+		        }
+        	
           	if (['animationGroupName', 'animationGroupNote', 'animationGroupState', 'animationGroupMode', 'animationRepeatMode', 'animationRepeatTime', 'editingAnimationID', 'editingKeyframeID', 'editingAnimationSelector'].indexOf(extension.name) != -1) {
               switch (extension.name) {
               	case 'animationGroupName':

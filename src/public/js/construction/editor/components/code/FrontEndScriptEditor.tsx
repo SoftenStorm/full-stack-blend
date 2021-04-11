@@ -193,7 +193,8 @@ class FrontEndScriptEditor extends Base<Props, State> {
 		            						if (extractedInfo[key] != DEFAULTS[key] && this.state.attributeValues[defaultDict[key]] != extractedInfo[key]) {
 		            								willUpdateAttributes.push({
 		            										name: defaultDict[key],
-		            										value: extractedInfo[key]
+		            										value: extractedInfo[key],
+		            										prettify: 'javascript'
 		            								});
 		            						}
 		            				}
@@ -201,7 +202,8 @@ class FrontEndScriptEditor extends Base<Props, State> {
             						if (this.state.attributeValues[this.functionNameMapping[key]] != extractedInfo[key]) {
             								willUpdateAttributes.push({
             										name: this.functionNameMapping[key],
-            										value: extractedInfo[key]
+            										value: extractedInfo[key],
+		            								prettify: 'javascript'
             								});
             						}
             				}

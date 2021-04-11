@@ -5,10 +5,39 @@ import {INTERNAL_CLASSES_GLOBAL_REGEX, NON_SINGLE_CONSECUTIVE_SPACE_GLOBAL_REGEX
 
 const KEYSTRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
+declare let ts: any;
+
+function createDefaultFormatCodeSettings(): ts.FormatCodeSettings {
+    return {
+        baseIndentSize: 0,
+        indentSize: 2,
+        tabSize: 2,
+        indentStyle: ts.IndentStyle.Smart,
+        newLineCharacter: "\r\n",
+        convertTabsToSpaces: true,
+        insertSpaceAfterCommaDelimiter: true,
+        insertSpaceAfterSemicolonInForStatements: true,
+        insertSpaceBeforeAndAfterBinaryOperators: true,
+        insertSpaceAfterConstructor: false,
+        insertSpaceAfterKeywordsInControlFlowStatements: true,
+        insertSpaceAfterFunctionKeywordForAnonymousFunctions: false,
+        insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: false,
+        insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: false,
+        insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces: true,
+        insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: false,
+        insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces: false,
+        insertSpaceAfterTypeAssertion: false,
+        insertSpaceBeforeFunctionParenthesis: false,
+        placeOpenBraceOnNewLineForFunctions: false,
+        placeOpenBraceOnNewLineForControlBlocks: false,
+        insertSpaceBeforeTypeAnnotation: false
+    };
+}
+
 function utf8_encode(source: string) {
     source = source.replace(/\r\n/g,"\n");
     var utftext = "";
-
+		
     for (var n = 0; n < source.length; n++) {
         var c = source.charCodeAt(n);
 
@@ -25,8 +54,40 @@ function utf8_encode(source: string) {
             utftext += String.fromCharCode((c & 63) | 128);
         }
     }
-
+		
     return utftext;
+}
+
+class LanguageServiceHost implements ts.LanguageServiceHost {
+    files: ts.MapLike<ts.IScriptSnapshot> = {};
+    addFile(fileName: string, text: string) {
+        this.files[fileName] = ts.ScriptSnapshot.fromString(text);
+    }
+		
+    getCompilationSettings = () => ts.getDefaultCompilerOptions();
+    getScriptFileNames = () => Object.keys(this.files);
+    getScriptVersion = (_fileName: string) => "0";
+    getScriptSnapshot = (fileName: string) => this.files[fileName];
+    getCurrentDirectory = () => process.cwd();
+    getDefaultLibFileName = (options: ts.CompilerOptions) => ts.getDefaultLibFilePath(options);
+}
+
+export function formatTSCode(fileName: string, text: string, options = createDefaultFormatCodeSettings()) {
+    const host = new LanguageServiceHost();
+    host.addFile(fileName, text);
+		
+    const languageService = ts.createLanguageService(host);
+    const edits = languageService.getFormattingEditsForDocument(fileName, options);
+    edits
+        .sort((a, b) => a.span.start - b.span.start)
+        .reverse()
+        .forEach(edit => {
+            const head = text.slice(0, edit.span.start);
+            const tail = text.slice(edit.span.start + edit.span.length);
+            text = `${head}${edit.newText}${tail}`;
+        });
+		
+    return text;
 }
 
 var CodeHelper = {
@@ -216,6 +277,27 @@ var CodeHelper = {
   	for (let element of current.children) {
   		CodeHelper.recursivePreparePastingContent(element, cut, isContainingInComponent || !!HTMLHelper.getAttribute(current, 'internal-fsb-inheriting'));
   	}
+  },
+  formatTSCode: (code: string, indent: boolean=false) => {
+  	const shorthandCode = '/* INTERNAL_FSB_FORMATTING_SHORTHAND */{';
+  	
+  	code = code.replace(/\@\{/g, shorthandCode);
+  	
+  	if (indent) {
+  		const beginCode = '/* INTERNAL_FSB_FORMATTING_BEGIN */class Controller extends Base {\n';
+			const endCode = '\n}/* INTERNAL_FSB_FORMATTING_END */';
+			
+			code = formatTSCode('', `${beginCode}${code}${endCode}`);
+			code = code.replace(beginCode, '').replace(endCode, '');
+  	} else {
+  		code = formatTSCode('', code);
+  	}
+  	
+  	while (code.indexOf(shorthandCode) != -1) {
+  		code = code.replace(shorthandCode, '@{');
+  	}
+  	
+  	return code;
   }
 };
 
