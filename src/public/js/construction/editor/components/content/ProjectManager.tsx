@@ -3,6 +3,7 @@ import {HTMLHelper} from '../../../helpers/HTMLHelper';
 import {TextHelper} from '../../../helpers/TextHelper';
 import {StorageHelper} from '../../../helpers/StorageHelper';
 import {RequestHelper} from '../../../helpers/RequestHelper';
+import {RepositoryHelper} from '../../../helpers/RepositoryHelper';
 import {IProps, IState, DefaultProps, DefaultState, Base} from '../Base';
 import {FullStackBlend, DeclarationHelper} from '../../../helpers/DeclarationHelper';
 import {LIBRARIES, DEBUG_GITHUB_UPLOADER} from '../../../Constants';
@@ -97,7 +98,7 @@ class ProjectManager extends Base<Props, State> {
         return; 
       }
       
-      let repo = this.getGitHubRepo();
+      let repo = RepositoryHelper.getGitHubRepo();
       
       repo.getSingleCommit('heads/' + GITHUB_FEATURE_BRANCH, (error, result, request) => {
         if (error) {
@@ -151,7 +152,7 @@ class ProjectManager extends Base<Props, State> {
       let construction = document.getElementById('area');
       let constructionWindow = construction.contentWindow || construction.contentDocument.document || construction.contentDocument;
       
-      let repo = this.getGitHubRepo();
+      let repo = RepositoryHelper.getGitHubRepo();
         
       repo.getSingleCommit('heads/' + GITHUB_FEATURE_BRANCH, (error, result, request) => {
         if (error) {
@@ -630,7 +631,7 @@ script(type="text/javascript" src="/js/Site.bundle.js")
       });
     }
     public merge() {
-      let repo = this.getGitHubRepo();
+      let repo = RepositoryHelper.getGitHubRepo();
       
       this.refs.merge.solveConflicts(GITHUB_FEATURE_BRANCH, GITHUB_DEVELOP_BRANCH).then((shouldContinue: boolean) => {
       	if (!shouldContinue) return;
@@ -687,7 +688,7 @@ script(type="text/javascript" src="/js/Site.bundle.js")
       });
     }
     public deploy() {
-      let repo = this.getGitHubRepo();
+      let repo = RepositoryHelper.getGitHubRepo();
       
       repo.createPullRequest({
         title: `Merging ${GITHUB_DEVELOP_BRANCH} into ${GITHUB_STAGING_BRANCH}`,

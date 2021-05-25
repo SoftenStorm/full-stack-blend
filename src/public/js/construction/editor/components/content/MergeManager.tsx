@@ -3,6 +3,13 @@ import {HTMLHelper} from '../../../helpers/HTMLHelper';
 import {IProps, IState, DefaultProps, DefaultState, Base} from '../Base';
 import {DeclarationHelper} from '../../../helpers/DeclarationHelper';
 
+declare const GITHUB_TOKEN: any;
+declare const GITHUB_ALIAS: any;
+declare const GITHUB_PROJECT: any;
+declare const GITHUB_FEATURE_BRANCH: any;
+declare const GITHUB_DEVELOP_BRANCH: any;
+declare const GITHUB_STAGING_BRANCH: any;
+
 interface Props extends IProps {
 }
 
