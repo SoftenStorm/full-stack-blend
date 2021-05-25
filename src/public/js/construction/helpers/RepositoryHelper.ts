@@ -23,7 +23,7 @@ var RepositoryHelper = {
     return gh;
   },
   getGitHubRepo: () => {
-    let gh = this.getGitHubInstance();
+    let gh = RepositoryHelper.getGitHubInstance();
     if (gh == null) return;
     
     let repo = gh.getRepo(GITHUB_ALIAS, GITHUB_PROJECT);
