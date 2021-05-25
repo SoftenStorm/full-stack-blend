@@ -6,12 +6,13 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
-	z-index: 1000;
+	z-index: 9999;
 	display: none;
+	background-color: rgba(255, 255, 255, 0.75);
 	
 	.close-button {
 		position: absolute;
-		top: 62px;
+		top: 9px;
 		right: 12px;
 		border-radius: 5px;
 	}
@@ -26,6 +27,7 @@
 		border-radius: 6px;
 		box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19) !important;
 		overflow: hidden;
+		background-color: rgba(255, 255, 255, 0.85);
 	  
 	  .iframe-navigation-bar {
 	  	position: absolute;
@@ -72,7 +74,7 @@
   
   .loading-container {
   	position: absolute;
-  	top: 20vh;
+  	top: 25vh;
 		left: 30vw;
 		width: 40vw;
 		height: 60vh;
@@ -138,15 +140,5 @@
 				}
 			}
 		}
-	}
-}
-body.internal-fsb-preview-on {
-	> .workspace-container {
-		opacity: 0.1;
-		pointer-events: none;
-	}
-	
-	.site-preview {
-		display: block;
 	}
 }

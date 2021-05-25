@@ -712,54 +712,58 @@ script(type="text/javascript" src="/js/Site.bundle.js")
     public merge() {
       let repo = this.getGitHubRepo();
       
-      repo.createPullRequest({
-        title: `Merging ${GITHUB_FEATURE_BRANCH} into ${GITHUB_DEVELOP_BRANCH}`,
-        head: GITHUB_FEATURE_BRANCH,
-        base: GITHUB_DEVELOP_BRANCH
-      }, (error, result, request) => {
-        if (error) {
-          alert(`There was an error while creating a pull request:\n${this.extractErrorMessage(error)}`);
-          return;
-        }
-        
-        let pullRequestNumber = result.number;
-        if (DEBUG_GITHUB_UPLOADER) console.log('pullRequestNumber', pullRequestNumber);
-        
-        repo.mergePullRequest(pullRequestNumber, {
-        }, (error, result, request) => {
-          if (error) {
-            alert(`There was an error while merging a pull request into a develop branch. However, your changes didn't lose and you can go to your GitHub.com and perform it later.'`);
-            return;
-          }
-          
-          repo.createPullRequest({
-            title: `Merging ${GITHUB_DEVELOP_BRANCH} into ${GITHUB_FEATURE_BRANCH}`,
-            head: GITHUB_DEVELOP_BRANCH,
-            base: GITHUB_FEATURE_BRANCH
-          }, (error, result, request) => {
-            if (error) {
-              alert(`There was an error while creating a pull request:\n${this.extractErrorMessage(error)}`);
-              return;
-            }
-            
-            let pullRequestNumber = result.number;
-            if (DEBUG_GITHUB_UPLOADER) console.log('pullRequestNumber', pullRequestNumber);
-            
-            repo.mergePullRequest(pullRequestNumber, {
-            }, (error, result, request) => {
-              if (error) {
-                alert(`There was an error while merging a pull request into your feature branch, please go to your GitHub.com and perform it.\n\n${this.extractErrorMessage(error)}'`);
-                return;
-              }
-              
-              window.setTimeout(() => {
-                if (confirm(`Your changes have been merged with other colleagues. Do you want to reload the project?`)) {
-                  window.location.reload();
-                }
-              }, 5000);
-            });
-          });
-        });
+      this.refs.merge.solveConflicts(GITHUB_FEATURE_BRANCH, GITHUB_DEVELOP_BRANCH).then((shouldContinue: boolean) => {
+      	if (!shouldContinue) return;
+      	
+      	repo.createPullRequest({
+	        title: `Merging ${GITHUB_FEATURE_BRANCH} into ${GITHUB_DEVELOP_BRANCH}`,
+	        head: GITHUB_FEATURE_BRANCH,
+	        base: GITHUB_DEVELOP_BRANCH
+	      }, (error, result, request) => {
+	        if (error) {
+	          alert(`There was an error while creating a pull request:\n${this.extractErrorMessage(error)}`);
+	          return;
+	        }
+	        
+	        let pullRequestNumber = result.number;
+	        if (DEBUG_GITHUB_UPLOADER) console.log('pullRequestNumber', pullRequestNumber);
+	        
+	        repo.mergePullRequest(pullRequestNumber, {
+	        }, (error, result, request) => {
+	          if (error) {
+	            alert(`There was an error while merging a pull request into a develop branch. However, your changes didn't lose and you can go to your GitHub.com and perform it later.'`);
+	            return;
+	          }
+	          
+	          repo.createPullRequest({
+	            title: `Merging ${GITHUB_DEVELOP_BRANCH} into ${GITHUB_FEATURE_BRANCH}`,
+	            head: GITHUB_DEVELOP_BRANCH,
+	            base: GITHUB_FEATURE_BRANCH
+	          }, (error, result, request) => {
+	            if (error) {
+	              alert(`There was an error while creating a pull request:\n${this.extractErrorMessage(error)}`);
+	              return;
+	            }
+	            
+	            let pullRequestNumber = result.number;
+	            if (DEBUG_GITHUB_UPLOADER) console.log('pullRequestNumber', pullRequestNumber);
+	            
+	            repo.mergePullRequest(pullRequestNumber, {
+	            }, (error, result, request) => {
+	              if (error) {
+	                alert(`There was an error while merging a pull request into your feature branch, please go to your GitHub.com and perform it.\n\n${this.extractErrorMessage(error)}'`);
+	                return;
+	              }
+	              
+	              window.setTimeout(() => {
+	                if (confirm(`Your changes have been merged with other colleagues. Do you want to reload the project?`)) {
+	                  window.location.reload();
+	                }
+	              }, 5000);
+	            });
+	          });
+	        });
+	      });
       });
     }
     public deploy() {
@@ -1021,7 +1025,7 @@ window.internalFsbSubmit = (guid: string, notation: string, event, callback: any
     }
     
     render() {
-      return pug `div`
+      return (<FullStackBlend.Components.MergeManager ref="merge"></FullStackBlend.Components.MergeManager>)
     }
 }
 

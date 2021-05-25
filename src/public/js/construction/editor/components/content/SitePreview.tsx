@@ -13,6 +13,7 @@ interface Props extends IProps {
 
 interface State extends IState {
    loading: boolean;
+   openning: boolean;
    location: string;
 }
 
@@ -24,6 +25,7 @@ Object.assign(ExtendedDefaultProps, {
 let ExtendedDefaultState = Object.assign({}, DefaultState);
 Object.assign(ExtendedDefaultState, {
     loading: false,
+    openning: false,
     location: null
 });
 
@@ -41,7 +43,7 @@ class SitePreview extends Base<Props, State> {
     }
     
     public open() {
-        this.setState({loading: true, location: 'about:blank'});
+        this.setState({loading: true, location: 'about:blank', openning: true});
         HTMLHelper.addClass(document.body, 'internal-fsb-preview-on');
     }
     
@@ -69,7 +71,7 @@ class SitePreview extends Base<Props, State> {
     private close(error) {
         if (error && error.message) console.error(error.message);
       	
-        this.setState({loading: false, location: 'about:blank'});
+        this.setState({loading: false, location: 'about:blank', openning: false});
     		HTMLHelper.removeClass(document.body, 'internal-fsb-preview-on');
     }
     
@@ -80,7 +82,7 @@ class SitePreview extends Base<Props, State> {
     render() {
       let endpoint = (<FullStackBlend.Components.EndpointManager ref="endpoint"></FullStackBlend.Components.EndpointManager>);
       return pug `
-        .site-preview
+        .site-preview(style={display: (this.state.openning) ? 'block' : 'none'})
           .close-button.btn.btn-sm.btn-light.px-3(onClick=this.close.bind(this))
             i.fa.fa-close.m-0
           .iframe-container

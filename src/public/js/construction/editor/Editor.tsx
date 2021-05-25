@@ -46,6 +46,7 @@ import './components/content/ComponentManager';
 import './components/content/PopupManager';
 import './components/content/EndpointManager';
 import './components/content/SchemaManager';
+import './components/content/MergeManager';
 
 import './components/animation/AnimationPicker';
 import './components/animation/TimelineManager';
