@@ -495,8 +495,8 @@ var WorkspaceHelper = {
     	component.innerHTML = '';
     }
     
-    const selecting = HTMLHelper.getElementByClassName('internal-fsb-selecting', holder);
-    if (selecting) HTMLHelper.removeClass(selecting, 'internal-fsb-selecting');
+    const selectings = [...HTMLHelper.getElementsByClassName('internal-fsb-selecting', holder)];
+    selectings.forEach(selecting => HTMLHelper.removeClass(selecting, 'internal-fsb-selecting'));
     
     return holder.innerHTML;
   },
