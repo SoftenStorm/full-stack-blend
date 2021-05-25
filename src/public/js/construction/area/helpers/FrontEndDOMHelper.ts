@@ -403,7 +403,7 @@ ${rootScript}`;
             case 'contenteditable':
               continue;
             default:
-              if (attribute.name.indexOf('internal-fsb-') == 0 && ['internal-fsb-animation'].indexOf(attribute.name) == -1) continue;
+              if (attribute.name.indexOf('internal-fsb-') == 0 && ['internal-fsb-animation'].indexOf(attribute.name) != -1) continue;
               if (CAMEL_OF_EVENTS_DICTIONARY[attribute.name]) {
                 let value = null;
                 if (attribute.value) value = JSON.parse(attribute.value);
@@ -802,7 +802,7 @@ ${rootScript}`;
             case 'contenteditable':
               continue;
             default:
-              if (attribute.name.indexOf('internal-fsb-') == 0 && ['internal-fsb-animation'].indexOf(attribute.name) == -1) continue;
+              if (attribute.name.indexOf('internal-fsb-') == 0 && ['internal-fsb-animation'].indexOf(attribute.name) != -1) continue;
               if (CAMEL_OF_EVENTS_DICTIONARY[attribute.name]) {
                 let value = null;
                 if (attribute.value) value = JSON.parse(attribute.value);
