@@ -1,4 +1,5 @@
 import {TextHelper} from './TextHelper';
+import {DEBUG_GITHUB_UPLOADER} from '../Constants';
 
 declare const GITHUB_TOKEN: any;
 declare const GITHUB_ALIAS: any;
@@ -80,6 +81,80 @@ var RepositoryHelper = {
     };
     
     return repo;
+  },
+  getProjectFile: (branch: string) => {
+    return new Promise((resolve, reject) => {
+      let repo = RepositoryHelper.getGitHubRepo();
+      repo.getSingleCommit('heads/' + branch, (error, result, request) => {
+        if (error) reject(new Error(`There was an error while retrieving the last commit, please try again.`));
+        else {
+          let baseCommitSHA = result && result.sha;
+          let baseTreeSHA = result && result.commit && result.commit.tree.sha;
+          if (DEBUG_GITHUB_UPLOADER) console.log('baseCommitSHA', baseCommitSHA);
+          if (DEBUG_GITHUB_UPLOADER) console.log('baseTreeSHA', baseTreeSHA);
+          
+          repo.getTree(baseTreeSHA, (error, result, request) => {
+            if (error) reject(new Error(`There was an error while retrieving project tree:\n${this.extractErrorMessage(error)}`));
+            else {
+              let previousProjectDataSHA = result.tree.filter(node => node.path == 'project.stackblend')[0] || null;
+              if (previousProjectDataSHA) previousProjectDataSHA = previousProjectDataSHA.sha;
+              if (DEBUG_GITHUB_UPLOADER) console.log('previousProjectDataSHA', previousProjectDataSHA);
+              
+              if (previousProjectDataSHA) {
+                repo.getBlob(previousProjectDataSHA, (error, result, request) => {
+                  if (error) reject(new Error(`There was an error while retrieving data:\n${this.extractErrorMessage(error)}`));
+                  else {
+                    if (typeof result !== 'object') {
+                      reject(new Error(`The project data is malformed. Please reverse any changes you have done manually using git rebase tool.`));
+                    }
+                    resolve(result);
+                  }
+                });
+              } else {
+                resolve(null);
+              }
+            }
+          });
+        }
+      });
+    });
+  },
+  getMergeBaseProjectFile: (base: string, head: string) => {
+    return new Promise((resolve, reject) => {
+      let repo = RepositoryHelper.getGitHubRepo();
+      repo.compareBranches('heads/' + base, 'heads/' + head, (error, result, request) => {
+        if (error) reject(new Error(`There was an error while retrieving the last commit of merge base, please try again.`));
+        else {
+          let baseCommitSHA = result && result.merge_base_commit && result.merge_base_commit.sha
+          let baseTreeSHA = result && result.merge_base_commit && result.merge_base_commit.commit.tree.sha;
+          if (DEBUG_GITHUB_UPLOADER) console.log('mergeBaseCommitSHA', baseCommitSHA);
+          if (DEBUG_GITHUB_UPLOADER) console.log('mergeBaseTreeSHA', baseTreeSHA);
+          
+          repo.getTree(baseTreeSHA, (error, result, request) => {
+            if (error) reject(new Error(`There was an error while retrieving project tree:\n${this.extractErrorMessage(error)}`));
+            else {
+              let previousProjectDataSHA = result.tree.filter(node => node.path == 'project.stackblend')[0] || null;
+              if (previousProjectDataSHA) previousProjectDataSHA = previousProjectDataSHA.sha;
+              if (DEBUG_GITHUB_UPLOADER) console.log('previousProjectDataSHA', previousProjectDataSHA);
+              
+              if (previousProjectDataSHA) {
+                repo.getBlob(previousProjectDataSHA, (error, result, request) => {
+                  if (error) reject(new Error(`There was an error while retrieving data:\n${this.extractErrorMessage(error)}`));
+                  else {
+                    if (typeof result !== 'object') {
+                      reject(new Error(`The project data is malformed. Please reverse any changes you have done manually using git rebase tool.`));
+                    }
+                    resolve(result);
+                  }
+                });
+              } else {
+                resolve(null);
+              }
+            }
+          });
+        }
+      });
+    });
   }
 };
 

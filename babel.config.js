@@ -2,6 +2,7 @@ module.exports = {
   presets: [
     "@babel/preset-typescript",
     "@babel/preset-env",
+    "@babel/preset-es2015"
   ],
   plugins: [
     "@babel/plugin-transform-regenerator",
