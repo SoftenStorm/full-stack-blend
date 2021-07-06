@@ -9,6 +9,7 @@ let options = {
 		// 
     "text-align": CONSTANTS.TEXT_ALIGN_OPTIONS,
     "font-style": CONSTANTS.FONT_STYLE_OPTIONS,
+    "device": CONSTANTS.DEVICE_OPTIONS,
     "table-cell-0": CONSTANTS.TABLE_CELL_0_OPTIONS,
     "table-cell-1": CONSTANTS.TABLE_CELL_1_OPTIONS,
     "internal-fsb-react-mode": CONSTANTS.REACT_MODE_OPTIONS,

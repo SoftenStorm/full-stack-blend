@@ -1,5 +1,7 @@
 include ../../../mixin/CreateReactComponent
 div(internal-fsb-not-for="internal-fsb-inheriting")
+  .section-container(style={'text-align': 'center', 'top': '10px', 'position': 'relative'})
+    +CreateReactComponent('FullStackBlend.Components.RadioButtonPicker', "{watchingAttributeNames: ['device', 'internal-fsb-disabled-mobile', 'internal-fsb-disabled-tablet', 'internal-fsb-disabled-desktop'], isSupportAnimatable: false}")
   .section-container.internal-fsb-selecting-on
     .section-title
       | Layer

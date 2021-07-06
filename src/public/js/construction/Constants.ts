@@ -74,6 +74,7 @@ export const FONT_WEIGHT_OPTIONS = [null, "normal", "bold", "bolder", "lighter",
 export const FONT_STRETCH_OPTIONS = [null, "ultra-condensed", "extra-condensed", "condensed", "semi-condensed", "normal", "semi-expanded", "expanded", "extra-expanded", "ultra-expanded"];
 export const TEXT_ALIGN_OPTIONS = [["text-align", "left", "fa-align-left"], ["text-align", "center", "fa-align-center"], ["text-align", "right", "fa-align-right"], ["text-align", "justify", "fa-align-justify"]];
 export const FONT_STYLE_OPTIONS = [["font-weight", "bold", "fa-bold"], ["font-style", "italic", "fa-italic"], ["text-decoration-line", "underline", "fa-underline"], ["text-decoration-line", "overline", "fa-strikethrough"]];
+export const DEVICE_OPTIONS = [["internal-fsb-disabled-mobile", "true", ["fa-power-off", "Mobile"]], ["internal-fsb-disabled-tablet", "true", ["fa-power-off", "Tablet"]], ["internal-fsb-disabled-desktop", "true", ["fa-power-off", "Desktop"]]];
 export const CELL_BORDER_OPTIONS = [null, "{SIZE}", "1px", "2px", "3px", "4px", "5px"];
 export const BACKGROUND_COLOR_OPTIONS = [null, "{COLOR}"];
 let table_cell_applying_style_function = function() { return this.state.extensionValues['-fsb-cell-style']; };
